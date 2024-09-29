@@ -125,4 +125,4 @@ while True:
     elif command == "3":
         break
 
-#@TODO : Доробити цикл фор томущо max не читає
+#@todo : Доробити цикл фор томущо max не читає
