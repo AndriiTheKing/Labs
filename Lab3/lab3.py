@@ -26,9 +26,16 @@ def maximum(a, b):
 
 def calculate(string):
     option_l = []
-    for i in string:
-        if i != " ":
-            option_l.append(i)
+    for j in string:
+        if j != " ":
+            if j == "m" or j == "M":
+                pass
+            elif j == "a" or j == "A":
+                pass
+            elif j == "x" or j == "X":
+                option_l.append("max")
+            else:
+                option_l.append(j)
 
     if len(option_l) > 0:
         if "^" in option_l:
@@ -79,10 +86,6 @@ def calculate(string):
                     b = int(option_l[index + 1])
                     return maximum(a, b)
 
-err = False
-err_text = "Виникла помилка. Неправилно всесені дані. Перечитайте правила."
-
-
 bIsClose = False
 
 help_text = ("Правила:\n"
@@ -96,33 +99,40 @@ help_text = ("Правила:\n"
              " max - знаходить максимальне число з 2 введених\n"
              " ^ - підносить перше число в степінь другим числом\n")
 while True:
-    command = input("Команди:\n"
+    main_command = input("Команди:\n"
                     "1) Почати.\n"
                     "2) Допомога.\n"
                     "3) Закінчити.\n:")
-    if command == "1":
+    if main_command == "1":
         while not bIsClose:
 
             text = input("Що робимо?\n:")
             temp_l = []
             for i in text:
                 if i != " ":
-                    temp_l.append(i)
+                    if i == "m" or i == "M":
+                        pass
+                    elif i == "a" or i == "A":
+                        pass
+                    elif i == "x" or i == "X":
+                        temp_l.append("max")
+                    else:
+                        temp_l.append(i)
 
             print(f"{temp_l[0]} {temp_l[1] } {temp_l[2]} = {calculate(text)}")
 
-            temp_command = input("1) Продовжити\n2) Назад\n:")
-            if temp_command == "1":
+            continue_command = input("1) Продовжити\n2) Назад\n:")
+            if continue_command == "1":
                 continue
-            elif temp_command == "2":
+            elif continue_command == "2":
                 break
 
-    elif command == "2":
+    elif main_command == "2":
         print(help_text)
         option = input("1) Назад\n:")
         if option == "1":
             continue
-    elif command == "3":
+    elif main_command == "3":
         break
 
-#@todo : Доробити цикл фор томущо max не читає
+
