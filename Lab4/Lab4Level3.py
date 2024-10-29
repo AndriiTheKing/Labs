@@ -1,7 +1,8 @@
-from symtable import Class
-
-from Lab4.WorkersTypes import WorkerTypes
-
+class WorkerTypes:
+    TRAINEE = "Стажер"
+    WORKER = "Працівник"
+    MANAGER = "Менеджер"
+    DIRECTOR = "Директор"
 
 class Company:
     Name: str
@@ -25,30 +26,34 @@ class Company:
 
     def calc_salary(self, employee: 'Worker'):
         salary: float = employee.Salary
-        if employee.Exp / 12 >= 1 or employee.Exp == 0:
-            exp_year: int = employee.Exp / 12  # 1, 2, 3, 4 yars working...
-
+        years: int = employee.Exp // 12
+        # Якщо працівник працює менш як рік, то в нього звичайна зарплата без надбавок
+        if years == 0:
             if employee.Position == WorkerTypes.TRAINEE:
-                for i in range(1, int(exp_year)):
-                    salary = salary * self.TRAINEE_YearBonusFactor
-
+                salary = self.TRAINEE_Salary
             elif employee.Position == WorkerTypes.WORKER:
-                for i in range(1, int(exp_year)):
-                    salary = salary * self.WORKER_YearBonusFactor
-
+                salary = self.WORKER_Salary
             elif employee.Position == WorkerTypes.MANAGER:
-                for i in range(1, int(exp_year)):
-                    salary = salary * self.MANAGER_YearBonusFactor
-
+                salary = self.MANAGER_Salary
             elif employee.Position == WorkerTypes.DIRECTOR:
-                for i in range(1, int(exp_year)):
-                    salary = salary * self.DIRECTOR_YearBonusFactor
+                salary = self.DIRECTOR_Salary
+        elif years > 0:
+            if employee.Position == WorkerTypes.TRAINEE:
+                salary = self.TRAINEE_Salary * self.TRAINEE_YearBonusFactor * years
+            elif employee.Position == WorkerTypes.WORKER:
+                salary = self.WORKER_Salary * self.WORKER_YearBonusFactor * years
+            elif employee.Position == WorkerTypes.MANAGER:
+                salary = self.MANAGER_Salary * self.MANAGER_YearBonusFactor * years
+            elif employee.Position == WorkerTypes.DIRECTOR:
+                salary = self.DIRECTOR_Salary * self.DIRECTOR_YearBonusFactor * years
+
         return salary
 
     def calc_employees_expenses(self):
-        all_expenses: float
-        for i in self.Employees:
-            all_expenses += i.Salary
+        all_expenses: float = 0
+        if len(self.Employees) > 0:
+            for i in self.Employees:
+                all_expenses += i.Salary
         return all_expenses
 
     def print_employees(self):
@@ -86,7 +91,7 @@ class Worker:
 
     Wallet: float
 
-    YEAR_BONUS_FACTOR = 1.2
+
 
     def __init__(self, name: str, exp: float, salary: float, position: str, company: Company, wallet: float):
         self.Name = name
@@ -96,10 +101,6 @@ class Worker:
         self.Company = company
         self.Wallet = wallet
 
-    def calc_salary(self):
-        if self.Exp % 12 == 0:
-            exp_year = self.Exp / 12  # 1, 2, 3, 4 yars working...
-            self.Exp = self.Salary * self.YEAR_BONUS_FACTOR * exp_year
 
     def obey(self):
         print(f"{self.Name}: Sorry Master!")
@@ -114,10 +115,13 @@ class Manager(Worker):
 
 class Director(Manager):
 
-    def launder_money(self):  # Відмивати гроші
-        self.Wallet += self.Company.Budget * 0.1  # Забираємо в компанії 10% грошей в карман
-        self.Company.Budget = self.Company.Budget * 0.9  # Забираємо в компанії 10% грошей в карман
-
+    StealFactor: float = 0.1
+    def steal_money(self):  # Відмивати гроші
+        print("\nВиконується крадіжка грошей...")
+        self.Wallet += self.Company.Budget * self.StealFactor  # Забираємо в компанії 10% грошей в карман
+        self.Company.Budget = self.Company.Budget * (1 - self.StealFactor)  # Забираємо в компанії 10% грошей в карман
+        print(f"В компанії забрали {self.StealFactor * 100}% бюджету в кишеню директору")
+        print(f"В кишені у директора {self.Wallet} грн")
 
 Roshen = Company("Roshen", 1000000)
 
@@ -129,3 +133,8 @@ Roshen.add(Worker1)
 Roshen.add(Manager1)
 Roshen.add(Director1)
 Roshen.print_employees()
+
+
+print(f"\nЗагальні витрати за місяць на зарплати робітників складають: {Roshen.calc_employees_expenses()} грн")
+
+Director1.steal_money()
